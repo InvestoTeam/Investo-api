@@ -1,0 +1,6 @@
+@Investo.Api_HostAddress = http://localhost:5114
+
+GET {{Investo.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
