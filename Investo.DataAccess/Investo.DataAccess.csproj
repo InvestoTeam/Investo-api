@@ -18,15 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="EF\" />
-      <Folder Include="Interfaces\" />
-      <Folder Include="Repositories\" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Update="appsettings.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
+      <Folder Include="Migrations\" />
     </ItemGroup>
 
 </Project>

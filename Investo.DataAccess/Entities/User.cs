@@ -1,20 +1,37 @@
-using System;
+﻿namespace Investo.DataAccess.Entities;
 
-namespace Investo.DataAccess.Entities
+using System.ComponentModel.DataAnnotations.Schema;
+
+[Table("users")]
+public class User : AbstractEntity<Guid>
 {
-    public class User
-    {
-        public int Id { get; set; }
-        public string Email { get; set; } = string.Empty;
-        public string FullName { get; set; } = string.Empty;
-        public string PasswordHash { get; set; } = string.Empty;
-        public string? AvatarUrl { get; set; }
-        public string? WalletAddress { get; set; }
-        public bool KycVerified { get; set; } = false;
-        public bool TwoFactorEnabled { get; set; } = false;
-        public UserType UserType { get; set; }
-        public DateTime JoinDate { get; set; } = DateTime.UtcNow;
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public DateTime? LastLoginAt { get; set; }
-    }
+    [Column("email")]
+    public string Email { get; set; } = null!;
+
+    [Column("first_name")]
+    public string FirstName { get; set; } = null!;
+
+    [Column("last_name")]
+    public string LastName { get; set; } = null!;
+
+    [Column("password_hash")]
+    public string PasswordHash { get; set; } = null!;
+
+    [Column("password_salt")]
+    public string PasswordSalt { get; set; } = null!;
+
+    [Column("refresh_token")]
+    public string? RefreshToken { get; set; }
+
+    [Column("refresh_token_expire_date")]
+    public DateTime? RefreshTokenExpireDate { get; set; }
+
+    [Column("registration_date")]
+    public DateTime RegistrationDate { get; set; }
+
+    [Column("user_type_id")]
+    [ForeignKey(nameof(UserType))]
+    public int UserTypeId { get; set; }
+
+    public UserType? UserType { get; set; }
 }

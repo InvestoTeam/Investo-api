@@ -1,33 +1,39 @@
 {
   "format": 1,
   "restore": {
-    "/Users/mac/Investo-api/Investo.BusinessLogic/Investo.BusinessLogic.csproj": {}
+    "D:\\main\\hackaton_investo\\back\\Investo.BusinessLogic\\Investo.BusinessLogic.csproj": {}
   },
   "projects": {
-    "/Users/mac/Investo-api/Investo.BusinessLogic/Investo.BusinessLogic.csproj": {
+    "D:\\main\\hackaton_investo\\back\\Investo.BusinessLogic\\Investo.BusinessLogic.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/mac/Investo-api/Investo.BusinessLogic/Investo.BusinessLogic.csproj",
+        "projectUniqueName": "D:\\main\\hackaton_investo\\back\\Investo.BusinessLogic\\Investo.BusinessLogic.csproj",
         "projectName": "Investo.BusinessLogic",
-        "projectPath": "/Users/mac/Investo-api/Investo.BusinessLogic/Investo.BusinessLogic.csproj",
-        "packagesPath": "/Users/mac/.nuget/packages/",
-        "outputPath": "/Users/mac/Investo-api/Investo.BusinessLogic/obj/",
+        "projectPath": "D:\\main\\hackaton_investo\\back\\Investo.BusinessLogic\\Investo.BusinessLogic.csproj",
+        "packagesPath": "C:\\Users\\klaster\\.nuget\\packages\\",
+        "outputPath": "D:\\main\\hackaton_investo\\back\\Investo.BusinessLogic\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/Users/mac/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\klaster\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/Users/mac/Investo-api/Investo.DataAccess/Investo.DataAccess.csproj": {
-                "projectPath": "/Users/mac/Investo-api/Investo.DataAccess/Investo.DataAccess.csproj"
+              "D:\\main\\hackaton_investo\\back\\Investo.DataAccess\\Investo.DataAccess.csproj": {
+                "projectPath": "D:\\main\\hackaton_investo\\back\\Investo.DataAccess\\Investo.DataAccess.csproj"
               }
             }
           }
@@ -48,6 +54,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[14.0.0, )"
+            },
             "BCrypt.Net-Next": {
               "target": "Package",
               "version": "[4.0.3, )"
@@ -73,26 +83,32 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/Users/mac/Investo-api/Investo.DataAccess/Investo.DataAccess.csproj": {
+    "D:\\main\\hackaton_investo\\back\\Investo.DataAccess\\Investo.DataAccess.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/mac/Investo-api/Investo.DataAccess/Investo.DataAccess.csproj",
+        "projectUniqueName": "D:\\main\\hackaton_investo\\back\\Investo.DataAccess\\Investo.DataAccess.csproj",
         "projectName": "Investo.DataAccess",
-        "projectPath": "/Users/mac/Investo-api/Investo.DataAccess/Investo.DataAccess.csproj",
-        "packagesPath": "/Users/mac/.nuget/packages/",
-        "outputPath": "/Users/mac/Investo-api/Investo.DataAccess/obj/",
+        "projectPath": "D:\\main\\hackaton_investo\\back\\Investo.DataAccess\\Investo.DataAccess.csproj",
+        "packagesPath": "C:\\Users\\klaster\\.nuget\\packages\\",
+        "outputPath": "D:\\main\\hackaton_investo\\back\\Investo.DataAccess\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/Users/mac/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\klaster\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -156,7 +172,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

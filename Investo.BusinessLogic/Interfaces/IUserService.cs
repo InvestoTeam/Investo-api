@@ -1,14 +1,8 @@
-using System.Threading.Tasks;
-using Investo.BusinessLogic.DTOs;
-using Investo.DataAccess.Entities;
+﻿using Investo.BusinessLogic.Models;
 
-namespace Investo.BusinessLogic.Interfaces
+namespace Investo.BusinessLogic.Interfaces;
+
+public interface IUserService
 {
-    public interface IUserService
-    {
-        Task<User?> GetUserByIdAsync(int id);
-        Task<User?> GetUserByEmailAsync(string email);
-        Task<bool> UpdateUserAsync(User user);
-        Task<User?> UpdateUserProfileAsync(int userId, UserProfileUpdateDto profileUpdate);
-    }
+    Task<Guid?> RegisterUserAsync(UserCreateModel userCreateModel);
 }

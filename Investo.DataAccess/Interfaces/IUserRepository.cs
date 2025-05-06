@@ -1,17 +1,7 @@
-using Investo.DataAccess.Entities;
-using System.Threading.Tasks;
+﻿using Investo.DataAccess.Entities;
 
-namespace Investo.DataAccess.Interfaces
+namespace Investo.DataAccess.Interfaces;
+
+public interface IUserRepository : ICrudRepository<User, Guid>
 {
-    public interface IUserRepository
-    {
-        // Authentication methods
-        Task<User> GetByEmailAsync(string email);
-        Task<User> CreateAsync(User user);
-        
-        // Profile methods
-        Task<User> GetByIdAsync(int id);
-        Task<User> UpdateAsync(User user);
-        Task<bool> EmailExistsAsync(string email);
-    }
 }

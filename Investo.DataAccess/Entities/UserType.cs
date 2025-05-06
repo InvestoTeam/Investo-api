@@ -1,8 +1,17 @@
-namespace Investo.DataAccess.Entities
+﻿namespace Investo.DataAccess.Entities;
+
+using System.ComponentModel.DataAnnotations.Schema;
+
+[Table("user_types")]
+public class UserType : AbstractEntity<int>
 {
-    public enum UserType
-    {
-        Investor = 0,
-        PropertyOwner = 1
-    }
-} 
+    [Column("title")]
+    public string Title { get; set; } = null!;
+}
+
+public enum UserTypes
+{
+    Admin = 1,
+    Investor = 2,
+    PropertyOwner = 3,
+}

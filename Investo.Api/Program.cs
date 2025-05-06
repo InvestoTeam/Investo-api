@@ -2,9 +2,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Investo.DataAccess.EF;
-using Investo.DataAccess.Interfaces;
-using Investo.DataAccess.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Investo.Api.Profiles;
 using Investo.BusinessLogic.Interfaces;
 using Investo.BusinessLogic.Services;
 
@@ -20,31 +19,36 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 // Configure Entity Framework with PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        b => b.MigrationsAssembly("Investo.DataAccess")
+        builder.Configuration.GetConnectionString("DefaultConnection")
     ));
 
-// Register repositories
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Issuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+    };
+});
+
+builder.Services.AddAuthorization();
 
 // Register services
-builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IJwtService, JwtService>();
 
-// Configure JWT Authentication
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "defaultSecretKeyForDevelopment12345678901234"))
-        };
-    });
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
 
 builder.Services.AddCors(options =>
 {
@@ -68,7 +72,6 @@ app.UseCors();
 
 app.UseHttpsRedirection();
 
-// Add authentication middleware
 app.UseAuthentication();
 app.UseAuthorization();
 

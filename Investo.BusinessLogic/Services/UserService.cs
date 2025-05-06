@@ -1,70 +1,54 @@
-using System;
-using System.Threading.Tasks;
-using Investo.BusinessLogic.DTOs;
+﻿namespace Investo.BusinessLogic.Services;
+
+using AutoMapper;
 using Investo.BusinessLogic.Interfaces;
+using Investo.BusinessLogic.Models;
+using Investo.DataAccess.EF;
 using Investo.DataAccess.Entities;
 using Investo.DataAccess.Interfaces;
+using Investo.DataAccess.Repositories;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Investo.BusinessLogic.Services
+public class UserService : IUserService
 {
-    public class UserService : IUserService
+    private readonly IJwtService jwtService;
+    private readonly IUserRepository userRepository;
+    private readonly IMapper mapper;
+    public UserService(ApplicationDbContext context, IJwtService jwtService, IMapper mapper)
     {
-        private readonly IUserRepository _userRepository;
+        this.userRepository = new UserRepository(context);
+        this.jwtService = jwtService;
+        this.mapper = mapper;
+    }
 
-        public UserService(IUserRepository userRepository)
+    public async Task<Guid?> RegisterUserAsync(UserCreateModel userCreateModel)
+    {
+        byte[] salt = RandomNumberGenerator.GetBytes(32);
+        byte[] password = Encoding.UTF8.GetBytes(userCreateModel.Password);
+
+        string hashPassword = this.GenerateHash(password, salt);
+        string saltString = Convert.ToBase64String(salt);
+
+        User? userEntity = this.mapper.Map<User>(userCreateModel);
+
+        if (userEntity is null)
         {
-            _userRepository = userRepository;
+            return null;
         }
 
-        public async Task<User?> GetUserByIdAsync(int id)
-        {
-            return await _userRepository.GetByIdAsync(id);
-        }
+        userEntity.PasswordHash = hashPassword;
+        userEntity.PasswordSalt = saltString;
+        userEntity.UserTypeId = userCreateModel.UserTypeId;
+        userEntity.RegistrationDate = DateTime.UtcNow;
 
-        public async Task<User?> GetUserByEmailAsync(string email)
-        {
-            return await _userRepository.GetByEmailAsync(email);
-        }
+        return await this.userRepository.CreateAsync(userEntity);
+    }
 
-        public async Task<bool> UpdateUserAsync(User user)
-        {
-            var existingUser = await _userRepository.GetByIdAsync(user.Id);
-            if (existingUser == null)
-            {
-                return false;
-            }
-
-            await _userRepository.UpdateAsync(user);
-            return true;
-        }
-
-        public async Task<User?> UpdateUserProfileAsync(int userId, UserProfileUpdateDto profileUpdate)
-        {
-            var user = await _userRepository.GetByIdAsync(userId);
-            
-            if (user == null)
-            {
-                return null;
-            }
-
-            // Update user properties
-            if (!string.IsNullOrEmpty(profileUpdate.FullName))
-            {
-                user.FullName = profileUpdate.FullName;
-            }
-
-            if (!string.IsNullOrEmpty(profileUpdate.AvatarUrl))
-            {
-                user.AvatarUrl = profileUpdate.AvatarUrl;
-            }
-
-            if (!string.IsNullOrEmpty(profileUpdate.WalletAddress))
-            {
-                user.WalletAddress = profileUpdate.WalletAddress;
-            }
-
-            // Save changes
-            return await _userRepository.UpdateAsync(user);
-        }
+    private string GenerateHash(byte[] password, byte[] salt)
+    {
+        byte[] hash = SHA256.HashData(password.Concat(salt).ToArray());
+        return Convert.ToBase64String(hash);
     }
 }
