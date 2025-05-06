@@ -35,7 +35,7 @@ public class JwtService : IJwtService
 
         var token = new JwtSecurityToken(
             issuer: configuration["JWT:Issuer"],
-            audience: configuration["JWT:Issuer"],
+            audience: configuration["JWT:Audience"],
             claims: claimn,
             expires: DateTime.UtcNow.AddMinutes(double.Parse(this.configuration["JWT:AccessTokenExpirationMinutes"]!)),
             signingCredentials: credentials

@@ -1,6 +1,32 @@
 [
   {
     "ContainingType": "Investo.Api.Controllers.UserController",
+    "Method": "LoginUser",
+    "RelativePath": "api/user/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "user",
+        "Type": "Investo.Api.ViewModels.UserLoginViewModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Investo.BusinessLogic.Models.UserTokenDataModel",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Investo.Api.Controllers.UserController",
     "Method": "CreateUser",
     "RelativePath": "api/user/register",
     "HttpMethod": "POST",
@@ -15,7 +41,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Guid",
+        "Type": "Investo.BusinessLogic.Models.UserTokenDataModel",
         "MediaTypes": [
           "text/plain",
           "application/json",

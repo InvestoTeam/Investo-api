@@ -5,4 +5,6 @@ namespace Investo.BusinessLogic.Interfaces;
 public interface IUserService
 {
     Task<Guid?> RegisterUserAsync(UserCreateModel userCreateModel);
+
+    Task<UserTokenDataModel?> LoginAsync(UserLoginModel userLoginModel);
 }

@@ -21,16 +21,27 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("register")]
-    // TODO: Replace GUID with token
-    public async Task<ActionResult<Guid>> CreateUser([FromBody] UserCreateViewModel user)
+    public async Task<ActionResult<UserTokenDataModel>> CreateUser([FromBody] UserCreateViewModel user)
     {
-        Guid? userId = await this.userService.RegisterUserAsync(this.mapper.Map<UserCreateModel>(user));
-
-        if (userId is null)
+        await this.userService.RegisterUserAsync(this.mapper.Map<UserCreateModel>(user));
+        UserTokenDataModel? userToken = await this.userService.LoginAsync(this.mapper.Map<UserLoginModel>(user));
+        if (userToken is null)
         {
-            return this.BadRequest("User already exists");
+            return this.BadRequest("Invalid email or password");
         }
 
-        return this.Ok(userId);
+        return this.Ok(userToken);
+    }
+
+    [HttpPost("login")]
+    public async Task<ActionResult<UserTokenDataModel>> LoginUser([FromBody] UserLoginViewModel user)
+    {
+        UserTokenDataModel? userToken = await this.userService.LoginAsync(this.mapper.Map<UserLoginModel>(user));
+        if (userToken is null)
+        {
+            return this.BadRequest("Invalid email or password");
+        }
+
+        return this.Ok(userToken);
     }
 }

@@ -7,6 +7,7 @@ using Investo.DataAccess.EF;
 using Investo.DataAccess.Entities;
 using Investo.DataAccess.Interfaces;
 using Investo.DataAccess.Repositories;
+using Microsoft.Extensions.Configuration;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,11 +17,46 @@ public class UserService : IUserService
     private readonly IJwtService jwtService;
     private readonly IUserRepository userRepository;
     private readonly IMapper mapper;
-    public UserService(ApplicationDbContext context, IJwtService jwtService, IMapper mapper)
+    private readonly IConfiguration configuration;
+
+    public UserService(ApplicationDbContext context, IJwtService jwtService, IMapper mapper, IConfiguration configuration)
     {
         this.userRepository = new UserRepository(context);
         this.jwtService = jwtService;
         this.mapper = mapper;
+        this.configuration = configuration;
+    }
+
+    public async Task<UserTokenDataModel?> LoginAsync(UserLoginModel userLoginModel)
+    {
+        var passwordSalt = await this.userRepository.GetUserSalt(userLoginModel.Email);
+        if (passwordSalt is null)
+        {
+            return null;
+        }
+
+        byte[] password = Encoding.UTF8.GetBytes(userLoginModel.Password);
+        string hashedPassword = this.GenerateHash(password, Convert.FromBase64String(passwordSalt));
+
+        var userEntity = await this.userRepository.LoginAsync(userLoginModel.Email, hashedPassword);
+        if (userEntity is null)
+        {
+            return null;
+        }
+
+        string token = this.jwtService.GenerateToken(this.mapper.Map<UserModel>(userEntity));
+
+        string? refreshToken = await this.SetNewRefreshToken(userEntity.Id);
+        if (refreshToken is null)
+        {
+            return null;
+        }
+
+        return new UserTokenDataModel
+        {
+            Token = token,
+            RefreshToken = refreshToken,
+        };
     }
 
     public async Task<Guid?> RegisterUserAsync(UserCreateModel userCreateModel)
@@ -44,6 +80,14 @@ public class UserService : IUserService
         userEntity.RegistrationDate = DateTime.UtcNow;
 
         return await this.userRepository.CreateAsync(userEntity);
+    }
+
+    private async Task<string?> SetNewRefreshToken(Guid userId)
+    {
+        string refreshToken = this.jwtService.GenerateRefreshToken();
+        DateTime expireDate = DateTime.UtcNow.AddDays(int.Parse(this.configuration["JWT:RefreshTokenExpirationDays"] ?? "7"));
+
+        return (await this.userRepository.SetRefreshToken(userId, refreshToken, expireDate) is not null) ? refreshToken : null;
     }
 
     private string GenerateHash(byte[] password, byte[] salt)

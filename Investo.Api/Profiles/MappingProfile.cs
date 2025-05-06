@@ -11,5 +11,8 @@ public class MappingProfile : Profile
     {
         this.CreateMap<UserCreateViewModel, UserCreateModel>();
         this.CreateMap<UserCreateModel, User>();
+        this.CreateMap<UserLoginViewModel, UserLoginModel>();
+        this.CreateMap<UserCreateViewModel, UserLoginModel>();
+        this.CreateMap<User, UserModel>();
     }
 }

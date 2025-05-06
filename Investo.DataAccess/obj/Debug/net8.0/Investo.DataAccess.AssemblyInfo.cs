@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Investo.DataAccess")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0ec2639143a84174028f6c6ab011fd172909bd5f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+80fc53034c33eb2a927cfce277896294d614360a")]
 [assembly: System.Reflection.AssemblyProductAttribute("Investo.DataAccess")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Investo.DataAccess")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
