@@ -27,6 +27,32 @@
   },
   {
     "ContainingType": "Investo.Api.Controllers.UserController",
+    "Method": "RefreshToken",
+    "RelativePath": "api/user/refresh",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "oldToken",
+        "Type": "Investo.Api.ViewModels.UserRefreshTokenViewModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Investo.BusinessLogic.Models.UserTokenDataModel",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Investo.Api.Controllers.UserController",
     "Method": "CreateUser",
     "RelativePath": "api/user/register",
     "HttpMethod": "POST",

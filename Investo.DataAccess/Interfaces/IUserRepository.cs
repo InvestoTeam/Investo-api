@@ -9,4 +9,6 @@ public interface IUserRepository : ICrudRepository<User, Guid>
     Task<User?> LoginAsync(string email, string passwordHash);
 
     Task<string?> SetRefreshToken(Guid userId, string refreshToken, DateTime expireDate);
+
+    Task<string?> GetRefreshToken(Guid userId);
 }

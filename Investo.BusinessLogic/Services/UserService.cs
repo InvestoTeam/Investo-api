@@ -8,6 +8,7 @@ using Investo.DataAccess.Entities;
 using Investo.DataAccess.Interfaces;
 using Investo.DataAccess.Repositories;
 using Microsoft.Extensions.Configuration;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -80,6 +81,43 @@ public class UserService : IUserService
         userEntity.RegistrationDate = DateTime.UtcNow;
 
         return await this.userRepository.CreateAsync(userEntity);
+    }
+
+    public async Task<UserTokenDataModel?> RefreshTokenAsync(UserTokenDataModel userTokenDataModel)
+    {
+        ClaimsPrincipal? principals = this.jwtService.GetPrincipalFromExpiredToken(userTokenDataModel.Token);
+        if (principals is null)
+        {
+            return null;
+        }
+
+        var id = principals.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (id is null)
+        {
+            return null;
+        }
+
+        Guid userId = Guid.Parse(id);
+        string? oldRefreshToken = await this.userRepository.GetRefreshToken(userId);
+        if (oldRefreshToken is null || !oldRefreshToken.Equals(userTokenDataModel.RefreshToken))
+        {
+            return null;
+        }
+
+        string? newRefreshToken = await this.SetNewRefreshToken(userId);
+        if (newRefreshToken is null)
+        {
+            return null;
+        }
+
+        var userEnity = await this.userRepository.GetByIdAsync(userId);
+        string? newToken = this.jwtService.GenerateToken(this.mapper.Map<UserModel>(userEnity));
+
+        return new UserTokenDataModel
+        {
+            Token = newToken,
+            RefreshToken = newRefreshToken,
+        };
     }
 
     private async Task<string?> SetNewRefreshToken(Guid userId)

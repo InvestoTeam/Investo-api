@@ -44,4 +44,20 @@ public class UserController : ControllerBase
 
         return this.Ok(userToken);
     }
+
+    [HttpPost("refresh")]
+    public async Task<ActionResult<UserTokenDataModel>> RefreshToken([FromBody] UserRefreshTokenViewModel oldToken)
+    {
+        UserTokenDataModel? userToken = await this.userService.RefreshTokenAsync(new UserTokenDataModel
+        {
+            Token = oldToken.OldToken,
+            RefreshToken = oldToken.RefreshToken,
+        });
+        if (userToken is null)
+        {
+            return this.BadRequest("Invalid refresh token");
+        }
+
+        return this.Ok(userToken);
+    }
 }

@@ -7,4 +7,6 @@ public interface IUserService
     Task<Guid?> RegisterUserAsync(UserCreateModel userCreateModel);
 
     Task<UserTokenDataModel?> LoginAsync(UserLoginModel userLoginModel);
+
+    Task<UserTokenDataModel?> RefreshTokenAsync(UserTokenDataModel userTokenDataModel);
 }

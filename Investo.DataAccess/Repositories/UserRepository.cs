@@ -35,4 +35,10 @@ public class UserRepository : AbstractRepository<User, Guid>, IUserRepository
         await this.context.SaveChangesAsync();
         return refreshToken;
     }
+
+    public async Task<string?> GetRefreshToken(Guid userId)
+    {
+        var user = await this.dbSet.FirstOrDefaultAsync(u => u.Id == userId);
+        return user?.RefreshToken;
+    }
 }
