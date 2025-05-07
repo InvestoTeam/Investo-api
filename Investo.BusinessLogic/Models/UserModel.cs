@@ -1,4 +1,6 @@
-﻿namespace Investo.BusinessLogic.Models;
+﻿using Investo.DataAccess.Entities;
+
+namespace Investo.BusinessLogic.Models;
 
 public class UserModel
 {
@@ -10,7 +12,9 @@ public class UserModel
 
     public string Email { get; set; } = string.Empty;
 
-    public DateTime RegistationDate { get; set; }
+    public DateTime RegistrationDate { get; set; }
 
     public int UserTypeId { get; set; }
+
+    public UserType? UserType { get; set; }
 }

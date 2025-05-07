@@ -41,4 +41,10 @@ public class UserRepository : AbstractRepository<User, Guid>, IUserRepository
         var user = await this.dbSet.FirstOrDefaultAsync(u => u.Id == userId);
         return user?.RefreshToken;
     }
+
+    public override async Task<User?> GetByIdAsync(Guid id)
+    {
+        var entity = await this.dbSet.Include(u => u.UserType).FirstOrDefaultAsync(u => u.Id == id);
+        return entity;
+    }
 }

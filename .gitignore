@@ -42,3 +42,7 @@
 /Investo.DataAccess/obj/Debug/net8.0/Investo.DataAccess.pdb
 /Investo.DataAccess/obj/Debug/net8.0/Investo.DataAccess.sourcelink.json
 /Investo.DataAccess/obj/Debug/net8.0/refint/Investo.DataAccess.dll
+/Investo.Api/obj/Debug/net8.0/EndpointInfo/Investo.Api.json
+/Investo.Api/obj/Debug/net8.0/ApiEndpoints.json
+/Investo.Api/obj/Debug/net8.0/Investo.Api.csproj.CoreCompileInputs.cache
+/Investo.BusinessLogic/obj/Debug/net8.0/Investo.BusinessLogic.csproj.CoreCompileInputs.cache

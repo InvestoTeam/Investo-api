@@ -120,6 +120,35 @@ public class UserService : IUserService
         };
     }
 
+    public async Task<UserModel?> GetUserByIdAsync(Guid id)
+    {
+        var userEntity = await this.userRepository.GetByIdAsync(id);
+        if (userEntity is null)
+        {
+            return null;
+        }
+
+        return this.mapper.Map<UserModel>(userEntity);
+    }
+
+    public async Task<bool> UpdateProfileAsync(Guid userId, UserUpdateModel user)
+    {
+        user.Id = userId;
+        var userEntity = await userRepository.GetByIdAsync(userId);
+        if (userEntity is null)
+        {
+            return false;
+        }
+
+        userEntity.Email = user.Email;
+        userEntity.FirstName = user.FirstName;
+        userEntity.LastName = user.LastName;
+
+        await this.userRepository.UpdateAsync(userEntity);
+
+        return true;
+    }
+
     private async Task<string?> SetNewRefreshToken(Guid userId)
     {
         string refreshToken = this.jwtService.GenerateRefreshToken();
