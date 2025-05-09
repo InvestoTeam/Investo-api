@@ -368,3 +368,5 @@ FodyWeavers.xsd
 **/obj/
 [Bb]in/
 [Oo]bj/
+
+Investo.Api\obj
