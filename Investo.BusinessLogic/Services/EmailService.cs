@@ -8,26 +8,29 @@ namespace Investo.BusinessLogic.Services;
 public class EmailService : IEmailService
 {
     private readonly EmailSettings emailSettings;
+    private readonly IEmailTemplateProviderService templateProviderService;
+    private readonly IEmailSender emailSender;
 
-    public EmailService(IOptions<EmailSettings> options)
+    public EmailService(IOptions<EmailSettings> options, IEmailTemplateProviderService templateProviderService, IEmailSender emailSender)
     {
         this.emailSettings = options.Value;
+        this.templateProviderService = templateProviderService;
+        this.emailSender = emailSender;
     }
 
     public async Task SendResetCodeAsync(string receiver, string code)
     {
-        var message = new MailMessage();
-        message.From = new MailAddress(this.emailSettings.From, "Investo");
-        message.To.Add(new MailAddress(receiver));
-        message.Subject = "Reset Password Code - Investo";
-        message.IsBodyHtml = true;
-        message.Body = $"<p>Hello!</p>\r\n\r\n<p>You have requested a password reset for your <strong>Investo</strong> account.</p>\r\n\r\n<p>Your password reset code is:</p>\r\n\r\n<h2 style=\"color: #2d89ef;\">{code}</h2>\r\n\r\n<p>This code is valid for 10 minutes. If you did not make this request, please ignore this email.</p>\r\n\r\n<br />\r\n\r\n<p style=\"font-size: 0.9em; color: #777;\">Best regards,<br />\r\nThe Investo Team<br />\r\nnoreply.investo@gmail.com</p>\r\n";
+        var body = templateProviderService.GetResetPasswordTemplate(code);
 
-        using (var smtpClient = new SmtpClient(this.emailSettings.Host, this.emailSettings.Port))
+        var message = new MailMessage
         {
-            smtpClient.EnableSsl = this.emailSettings.EnableSsl;
-            smtpClient.Credentials = new System.Net.NetworkCredential(this.emailSettings.UserName, this.emailSettings.Password);
-            await smtpClient.SendMailAsync(message);
-        }
+            From = new MailAddress(emailSettings.From, "Investo"),
+            Subject = "Password Reset Code - Investo",
+            Body = body,
+            IsBodyHtml = true,
+        };
+        message.To.Add(new MailAddress(receiver));
+
+        await emailSender.SendASync(message);
     }
 }

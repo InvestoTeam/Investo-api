@@ -18,5 +18,5 @@ public interface IUserService
 
     Task<PasswordResetTokenModel?> VerifyPasswordResetCodeAsync(PasswordResetCodeModel code);
 
-    Task<bool> ResetPasswordAsync(string email, string _password);
+    Task<bool> ResetPasswordAsync(string email, string newPassword);
 }

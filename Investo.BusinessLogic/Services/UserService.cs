@@ -198,7 +198,7 @@ public class UserService : IUserService
         };
     }
 
-    public async Task<bool> ResetPasswordAsync(string email, string _password)
+    public async Task<bool> ResetPasswordAsync(string email, string newPassword)
     {
         var userEntity = await this.userRepository.GetByEmailAsync(email);
         if (userEntity is null)
@@ -206,7 +206,7 @@ public class UserService : IUserService
             return false;
         }
         byte[] salt = RandomNumberGenerator.GetBytes(32);
-        byte[] password = Encoding.UTF8.GetBytes(_password);
+        byte[] password = Encoding.UTF8.GetBytes(newPassword);
 
         string hashPassword = GenerateHash(password, salt);
         string saltString = Convert.ToBase64String(salt);
