@@ -31,6 +31,6 @@ public class EmailService : IEmailService
         };
         message.To.Add(new MailAddress(receiver));
 
-        await emailSender.SendASync(message);
+        await emailSender.SendAsync(message);
     }
 }
