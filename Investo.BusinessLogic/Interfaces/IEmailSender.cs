@@ -4,5 +4,5 @@ namespace Investo.BusinessLogic.Interfaces;
 
 public interface IEmailSender
 {
-    Task SendASync(MailMessage message);
+    Task SendAsync(MailMessage message);
 }

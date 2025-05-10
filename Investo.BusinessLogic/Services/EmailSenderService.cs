@@ -13,7 +13,7 @@ public class EmailSenderService : IEmailSender
     {
         this.settings = options.Value;
     }
-    public async Task SendASync(MailMessage message)
+    public async Task SendAsync(MailMessage message)
     {
         using var smtpClient = new SmtpClient(this.settings.Host, this.settings.Port)
         {
