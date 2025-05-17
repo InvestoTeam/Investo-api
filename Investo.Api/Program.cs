@@ -47,7 +47,7 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(
-        builder.Configuration.GetConnectionString("DefaultConnection")
+        builder.Configuration.GetConnectionString("ProductionConnection")
     ));
 
 builder.Services.AddAuthentication(options =>
@@ -86,7 +86,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policyBuilder =>
         policyBuilder
-            .WithOrigins("http://localhost:4200")
+            .WithOrigins("http://localhost:4200", "https://lnvesto.github.io")
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials());
