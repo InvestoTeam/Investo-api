@@ -82,6 +82,19 @@ public class UserController : ControllerBase
     }
 
     [Authorize]
+    [HttpGet("profile")]
+    public async Task<ActionResult<UserModel>> GetMyProfile()
+    {
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+        var user = await this.userService.GetUserByIdAsync(userId);
+        if (user is null)
+        {
+            return this.NotFound(new { message = "User not found" });
+        }
+        return Ok(user);
+    }
+
+    [Authorize]
     [HttpPut("profile")]
     public async Task<ActionResult> UpdateProfile([FromBody] UserUpdateViewModel userUpdateModel)
     {
