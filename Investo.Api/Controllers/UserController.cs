@@ -155,4 +155,11 @@ public class UserController : ControllerBase
 
         return this.Ok();
     }
+
+    [HttpGet]
+    [Route("temp")]
+    public ActionResult<string> GetTempMessage()
+    {
+        return this.Ok("Hello, world!");
+    }
 }
