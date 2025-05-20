@@ -8,7 +8,7 @@ public static class DataSeed
     {
         return new List<UserType>
         {
-            new UserType { Id = (int)UserTypes.Admin, Title = Enum.GetName(UserTypes.Admin)! },
+            new UserType { Id = (int)UserTypes.Admin, Title = Enum.GetName(UserTypes.Admin)! }, 
             new UserType { Id = (int)UserTypes.Investor, Title = Enum.GetName(UserTypes.Investor)! },
             new UserType { Id = (int)UserTypes.PropertyOwner, Title = Enum.GetName(UserTypes.PropertyOwner)! },
         };
