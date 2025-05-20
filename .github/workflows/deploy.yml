@@ -82,12 +82,6 @@ jobs:
           git push origin deploy
           
           echo "Empty commit pushed to deploy branch to trigger deployment workflow"
-          
-          # Commit the change
-          git commit -m "Deploy latest changes from main to production"
-          
-          # Force push to deploy branch
-          git push -f origin temp-deploy-branch:deploy
 
       # Directly start the Azure deployment using multiple approaches to ensure it runs
       - name: Trigger Azure Deployment
