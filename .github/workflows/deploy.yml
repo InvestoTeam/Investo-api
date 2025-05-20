@@ -20,38 +20,68 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Deploy to the deploy branch
+      # Deploy to the deploy branch but keep workflow files
       - name: Deploy to deploy branch
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
           # Configure git with token-based authentication
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
 
-          # Set the remote URL with token authentication using environment variables
+          # Set the remote URL with token authentication
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
           
-          # Fetch deploy branch to see if Azure workflow exists there
+          # Fetch deploy branch
           git fetch origin deploy
+          
+          # First - save the workflow files from deploy branch
+          mkdir -p /tmp/workflow-backup
+          if git show origin/deploy:.github/workflows/deploy_investo-api.yml > /dev/null 2>&1; then
+            echo "Backing up Azure workflow file from deploy branch"
+            git show origin/deploy:.github/workflows/deploy_investo-api.yml > /tmp/workflow-backup/deploy_investo-api.yml
+          fi
           
           # Create a temporary branch from the current HEAD
           git checkout -b temp-deploy-branch
           
-          # Remove only this workflow file
-          git rm -f .github/workflows/deploy.yml
+          # Copy everything except workflow files and .git directory
+          find . -not -path "./.git*" -not -path "./.github*" -type f -exec git add {} \;
           
-          # Check if Azure workflow exists in deploy branch and fetch it
-          if git show origin/deploy:.github/workflows/deploy_investo-api.yml > /dev/null 2>&1; then
-            echo "Azure workflow file exists in deploy branch - copying it with modifications"
-            mkdir -p .github/workflows/
-            # Get the workflow file content and add a timestamp comment to force GitHub to detect changes
-            git show origin/deploy:.github/workflows/deploy_investo-api.yml > .github/workflows/deploy_investo-api.yml
-            echo "# Last updated: $(date -u)" >> .github/workflows/deploy_investo-api.yml
+          # Remove our deploy workflow file from being committed to deploy branch
+          git rm -f --cached .github/workflows/deploy.yml || true
+          
+          # Restore the workflow file from deploy branch
+          mkdir -p .github/workflows/
+          if [ -f "/tmp/workflow-backup/deploy_investo-api.yml" ]; then
+            echo "Restoring Azure workflow file to deploy branch"
+            cp /tmp/workflow-backup/deploy_investo-api.yml .github/workflows/
             git add .github/workflows/deploy_investo-api.yml
-          else
-            echo "WARNING: Azure workflow file not found in deploy branch"
           fi
+          
+          # Commit the change
+          git commit -m "Deploy latest changes from main to production"
+          
+          # Force push to deploy branch (exclude workflow files)
+          git push -f origin temp-deploy-branch:deploy
+
+      # Directly start the Azure deployment workflow
+      - name: Trigger Azure Deployment
+        run: |
+          sleep 3 # Give GitHub a moment to process the push to deploy branch
+          
+          echo "Creating empty commit to trigger workflow via push event..."
+          # Create an empty commit on deploy branch
+          git fetch origin deploy
+          git checkout deploy
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          
+          # Commit empty change and push to trigger the workflow
+          git commit --allow-empty -m "Trigger Azure deployment workflow via empty commit"
+          git push origin deploy
+          
+          echo "Empty commit pushed to deploy branch to trigger deployment workflow"
           
           # Commit the change
           git commit -m "Deploy latest changes from main to production"
