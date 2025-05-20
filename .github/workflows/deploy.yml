@@ -10,6 +10,9 @@ jobs:
   deploy:
     name: Deploy to deploy branch
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write  # Required for triggering workflows
     
     steps:
       - name: Checkout code
@@ -57,8 +60,31 @@ jobs:
       # Trigger the deployment workflow in deploy branch
       - name: Trigger deployment workflow
         run: |
-          curl -X POST \
+          # Sleep to give GitHub time to process the push before dispatching the event
+          sleep 10
+          
+          # Try with GITHUB_TOKEN first
+          echo "Trying to trigger workflow with GITHUB_TOKEN..."
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/${GITHUB_REPOSITORY}/dispatches \
-            -d '{"event_type":"deploy_triggered"}'
+            -H "Content-Type: application/json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/dispatches" \
+            -d '{"event_type":"deploy_triggered", "client_payload": {"source": "main_workflow", "timestamp": "'$(date -u "+%Y-%m-%dT%H:%M:%SZ")'"}}')
+          
+          if [ "$RESPONSE" == "204" ]; then
+            echo "Successfully triggered deployment workflow with GITHUB_TOKEN"
+          else
+            echo "Failed with response code: $RESPONSE"
+            echo "Will try direct push to deploy branch to trigger workflow..."
+            
+            # Create and push an empty commit to deploy branch to trigger the workflow
+            git checkout deploy
+            git pull origin deploy
+            git config --global user.name "GitHub Actions"
+            git config --global user.email "actions@github.com"
+            git commit --allow-empty -m "Trigger deployment workflow by empty commit"
+            git push origin deploy
+            
+            echo "Empty commit pushed to deploy branch to trigger deployment workflow"
+          fi
