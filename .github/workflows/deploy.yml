@@ -23,8 +23,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Configure git with token-based authentication
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
+          git config --global user.name "Investo API Deployment"
+          git config --global user.email "investo@deployment.com"
 
           # Set the remote URL with token authentication using environment variables
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
@@ -49,7 +49,16 @@ jobs:
           fi
           
           # Commit the change
-          git commit -m "Remove deploy workflow file but preserve other GitHub files"
+          git commit -m "Deploy latest changes from main to production"
           
           # Force push to deploy branch
           git push -f origin temp-deploy-branch:deploy
+
+      # Trigger the deployment workflow in deploy branch
+      - name: Trigger deployment workflow
+        run: |
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${GITHUB_REPOSITORY}/dispatches \
+            -d '{"event_type":"deploy_triggered"}'
