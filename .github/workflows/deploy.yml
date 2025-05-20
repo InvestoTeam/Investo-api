@@ -29,14 +29,27 @@ jobs:
           # Set the remote URL with token authentication using environment variables
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
           
+          # Fetch deploy branch to see if Azure workflow exists there
+          git fetch origin deploy
+          
           # Create a temporary branch from the current HEAD
           git checkout -b temp-deploy-branch
           
-          # Remove .github directory (which includes the workflow files)
-          git rm -rf .github
+          # Remove only this workflow file
+          git rm -f .github/workflows/deploy.yml
+          
+          # Check if Azure workflow exists in deploy branch and preserve it
+          if git show origin/deploy:.github/workflows/deploy_investo-api.yml > /dev/null 2>&1; then
+            echo "Azure workflow file exists in deploy branch and will be preserved"
+            mkdir -p .github/workflows/
+            git show origin/deploy:.github/workflows/deploy_investo-api.yml > .github/workflows/deploy_investo-api.yml
+            git add .github/workflows/deploy_investo-api.yml
+          else
+            echo "Note: Azure workflow file not found in deploy branch"
+          fi
           
           # Commit the change
-          git commit -m "Remove workflow files for deploy branch"
+          git commit -m "Remove deploy workflow file but preserve other GitHub files"
           
           # Force push to deploy branch
           git push -f origin temp-deploy-branch:deploy
